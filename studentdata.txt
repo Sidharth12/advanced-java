@@ -1,0 +1,116 @@
+web.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <servlet>
+        <servlet-name>servleta1</servlet-name>
+        <servlet-class>servleta1</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>servleta1</servlet-name>
+        <url-pattern>/servleta1</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+</web-app>
+
+index.html 
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>accept data from user</title>
+</head>
+<body>
+    <form  input="servleta1" method="Get">
+<center>
+<h1>Please Enter The Data</h1>
+please enter student id <br>
+<input type="text" name="stuId" value="S000"><br>
+please enter student name <br>
+<input type="text" name="stuname" maxlength="30" value=""><br>
+please enter student age <br>
+<input type="text" name="stuage" min="0" max="25" value="00"><br>
+ please enter student marks <br>
+<input type="text" name="stumarks"  min="0" value="00"><br>
+please enter student percentage <br>
+<input type="text" name="stupercent" value="00"><br>
+please enter student grade <br>
+<input type="text" name="stugrade" value="a,b,c,d,e"><br>
+<input type="submit" value="save"><br>
+<input type="reset"  value="reset"><br>
+</form>
+</center>
+</body>
+</html>
+
+servlet.java
+
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class servleta1 extends HttpServlet {
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = request.getParameter("stuId");
+        String name = request.getParameter("stuname");
+        int age = Integer.parseInt(request.getParameter("stuage"));
+        int marks = Integer.parseInt(request.getParameter("stumarks"));
+        float percent = Float.parseFloat(request.getParameter("stupercent"));
+        String grade = request.getParameter("stugrade");
+
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+
+            out.println("student id is :" + id);
+            out.println("<br>");
+            out.println("student name is :" + name);
+            out.println("<br>");
+            out.println("student age is :" + age);
+            out.println("<br>");
+            out.println("student marks is :" + marks);
+            out.println("<br>");
+            out.println("student percentage is :" + percent);
+            out.println("<br>");
+            out.println("student grade is :" + grade);
+            out.println("<br>");
+        }
+         File fin = new File("C:\\Users\\vas_student\\Documents\\mydata.txt");
+            FileOutputStream fos = new FileOutputStream(fin);
+            fos.write(id.getBytes());
+             fos.write('\n');
+            fos.write(name.getBytes());
+             fos.write('\n');
+            fos.write(age);
+             fos.write('\n');
+            fos.write( marks);
+             fos.write('\n');
+            fos.write((int) percent);
+             fos.write('\n');
+            fos.write(grade.getBytes());
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+
+    }
+}
