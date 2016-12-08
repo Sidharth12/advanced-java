@@ -1,0 +1,188 @@
+index.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>enter the data</title>
+</head>
+<body>
+<center>
+<h1>Please Enter The Data</h1>
+<form  action="http://localhost:8080/studentsata1/servletstu" method="GET">
+please enter student id <br>
+<input type="text" name="stuId" value="S000"><br>
+please enter student name <br>
+<input type="text" name="stuname" maxlength="30" value=""><br>
+please enter student age <br>
+<input type="number" name="stuage" min="0" max="25" value="00"><br>
+ please enter student marks <br>
+<input type="number" name="stumarks"  min="0" value="00"><br>
+please enter student percentage <br>
+<input type="number" name="stupercent" min="0" value="00"><br>
+please enter student grade <br>
+<input type="text" name="stugrade" value="a,b,c,d,e"><br>
+<input type="submit" name="save" value="save"><br>
+<input type="reset"  value="reset"><br>
+<button type="button" onclick="href=forward(http://localhost:8080/studentsata1/servletstu)">New</button>
+</form>
+</center>
+</body>
+</html>
+
+ servletstu.java
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.StringTokenizer;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.sun.org.apache.xml.internal.serialize.LineSeparator;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
+public class servletstu extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	public servletstu() {
+		super();
+
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String id = request.getParameter("stuId");
+		String name = request.getParameter("stuname");
+		int age = Integer.parseInt(request.getParameter("stuage"));
+		int marks = Integer.parseInt(request.getParameter("stumarks"));
+		int percent = Integer.parseInt(request.getParameter("stupercent"));
+		String grade = request.getParameter("stugrade");
+		String filename = "C:\\workspace\\fileswriterjava\\mydata.txt";
+		response.setContentType("text/html;charset=UTF-8");
+		try (PrintWriter out = response.getWriter()) {
+
+			out.println("student id is :" + id);
+			out.println("<br>");
+			out.println("student name is :" + name);
+			out.println("<br>");
+			out.println("student age is :" + age);
+			out.println("<br>");
+			out.println("student marks is :" + marks);
+			out.println("<br>");
+			out.println("student percentage is :" + percent);
+			out.println("<br>");
+			out.println("student grade is :" + grade);
+			out.println("<br>");
+			int count = 0;
+			char ch[] = id.toCharArray();
+			if (ch[0] == 'S' || ch[0] == 's') {
+				for (int i = 1; i < 4; i++) {
+					if (Character.isDigit(ch[i])) {
+						count++;
+					} else {
+						out.println("invalid id");
+						out.println("<br>");
+						break;
+					}
+				}
+				if (count == 3) {
+					out.println("valid id");
+					out.println("<br>");
+				}
+			} else {
+				out.println("invalid id");
+				out.println("<br>");
+			}
+			if (grade.charAt(0) == ('a') || grade.charAt(0) == ('b') || grade.charAt(0) == ('c')
+					|| grade.charAt(0) == ('d') || grade.charAt(0) == ('e')) {
+				out.println("valid grade");
+			} else {
+				out.println("invalid grade");
+			}
+		}
+		int position = 0;
+		ArrayList al = new ArrayList();
+		al.add(id);
+		al.add(name);
+		al.add(age);
+		al.add(marks);
+		al.add(percent);
+		al.add(grade);
+		System.out.println("al is :" + al);
+		try {
+			File fin = new File(filename);
+			FileWriter fos = new FileWriter(fin, true);
+			fos.write(id);
+			fos.write(',');
+			fos.write(name);
+			fos.write(',');
+			fos.write(Integer.toString(age));
+			fos.write(',');
+			fos.write(Integer.toString(marks));
+			fos.write(',');
+			fos.write(Integer.toString(percent));
+			fos.write(',');
+			fos.write(grade);
+			String ls = System.getProperty("line.separator");
+			fos.write(ls);
+			fos.close();
+		} finally {
+		}
+		String read;
+		int count = 0, count1 = 0, count2 = 0;
+		try {
+			File fin = new File(filename);
+			FileReader fos = new FileReader(fin);
+			BufferedReader br = new BufferedReader(fos);
+			PrintWriter out = response.getWriter();
+			while ((read = br.readLine()) != null) {
+				System.out.println("read is : "+read);
+				String readstring1[]=read.split(",");
+				System.out.println("readstring is : "+readstring1);
+				for(String s:readstring1){
+					ArrayList<String> readstring = null;
+					if(readstring.isEmpty()){readstring.add(s);}
+				}
+				//System.out.println("readstring list is : "+readstring);
+			System.out.println("the no of students passing are :" + count1);
+			System.out.println("the no of students failed are :" + count2);
+			}
+		}
+		catch(NullPointerException ex){ex.getMessage();
+		}
+		} 
+}
+
+web.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>studentsata1</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+  <servlet>
+      <servlet-name>servletstu</servlet-name>
+        <servlet-class>servletstu</servlet-class>
+  </servlet>
+  <servlet-mapping>
+        <servlet-name>servletstu</servlet-name>
+        <url-pattern>/servletstu</url-pattern>
+    </servlet-mapping>
+</web-app>
